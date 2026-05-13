@@ -57,16 +57,27 @@ ifneq ($(JAILBROKEN),1)
 before-all::
 	@if [[ ! -f $(UYOU_DEB) ]]; then \
 		rm -rf $(UYOU_PATH)/*; \
-		$(PRINT_FORMAT_BLUE) "Downloading uYou"; \
 	fi
 before-all::
 	@if [[ ! -f $(UYOU_DEB) ]]; then \
- 		curl -s -L https://raw.githubusercontent.com/arichornlover/uYou-for-YouTube/main/Packages/com.miro.uyou_$(UYOU_VERSION)_iphoneos-arm.deb -o $(UYOU_DEB); \
- 	fi; \
+		for url in \
+			"https://web.archive.org/web/0id_/https://miro92.com/repo/debs/com.miro.uyou_$(UYOU_VERSION)_iphoneos-arm.deb" \
+			"https://raw.githubusercontent.com/chrisharper22/uYouPlus/main/Tweaks/uYou/com.miro.uyou_$(UYOU_VERSION)_iphoneos-arm.deb" \
+			"https://raw.githubusercontent.com/Balackburn/uYouPlus/main/Tweaks/uYou/com.miro.uyou_$(UYOU_VERSION)_iphoneos-arm.deb" \
+		; do \
+			echo "Attempting to download from $$url ..."; \
+			curl -s -L "$$url" -o $(UYOU_DEB); \
+			SIZE=$$(stat -f%z $(UYOU_DEB) 2>/dev/null || echo 0); \
+			if [ "$$SIZE" -gt 10000000 ]; then \
+				echo "Valid uYou file downloaded successfully!"; \
+				break; \
+			fi; \
+		done; \
+	fi; \
 	if [[ ! -f $(UYOU_DYLIB) || ! -d $(UYOU_BUNDLE) ]]; then \
-		tar -xf Tweaks/uYou/com.miro.uyou_$(UYOU_VERSION)_iphoneos-arm.deb -C Tweaks/uYou; tar -xf Tweaks/uYou/data.tar* -C Tweaks/uYou; \
+		tar -xf $(UYOU_DEB) -C Tweaks/uYou; tar -xf Tweaks/uYou/data.tar* -C Tweaks/uYou; \
 		if [[ ! -f $(UYOU_DYLIB) || ! -d $(UYOU_BUNDLE) ]]; then \
-			$(PRINT_FORMAT_ERROR) "Failed to extract uYou"; exit 1; \
+			echo "Failed to extract uYou. The downloaded archive is still invalid."; exit 1; \
 		fi; \
 	fi;
 else
