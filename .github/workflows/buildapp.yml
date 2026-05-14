@@ -123,6 +123,8 @@ jobs:
           sed -i '' 's/$(THEOS_OBJ_DIR)\/libFLEX.dylib //g' Makefile
           sed -i '' 's/Tweaks\/YouPiP //g' Makefile
           sed -i '' 's/$(THEOS_OBJ_DIR)\/YouPiP.dylib //g' Makefile
+          sed -i '' 's/Tweaks\/YTUHD //g' Makefile
+          sed -i '' 's/$(THEOS_OBJ_DIR)\/YTUHD.dylib //g' Makefile
           make package IPA=YouTube.ipa FINALPACKAGE=1 -j1 LDFLAGS="-Wl,-ld_classic"
           (mv "packages/$(ls -t packages | head -n1)" "packages/uYouPlus_${{ env.YOUTUBE_VERSION  }}_${{ env.UYOU_VERSION }}.ipa")
           echo "package=$(ls -t packages | head -n1)" >>$GITHUB_OUTPUT
