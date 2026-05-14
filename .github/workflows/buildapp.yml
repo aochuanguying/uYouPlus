@@ -119,6 +119,7 @@ jobs:
           cd ${{ github.workspace }}/main
           sed -i '' "27s#.*#BUNDLE_ID = ${{ env.BUNDLE_ID }}#g" Makefile
           sed -i '' "26s#.*#DISPLAY_NAME = ${{ env.APP_NAME }}#g" Makefile          
+          sed -i '' 's/OS_OBJECT_DECL(xpc_object);/\/\/ OS_OBJECT_DECL(xpc_object);/g' Tweaks/FLEXing/libflex/FLEX/Classes/GlobalStateExplorers/SystemLog/ActivityStreamAPI.h
           make package IPA=YouTube.ipa FINALPACKAGE=1
           (mv "packages/$(ls -t packages | head -n1)" "packages/uYouPlus_${{ env.YOUTUBE_VERSION  }}_${{ env.UYOU_VERSION }}.ipa")
           echo "package=$(ls -t packages | head -n1)" >>$GITHUB_OUTPUT
